@@ -69,3 +69,30 @@ def test_enclosing_git_is_not_project_provenance(tmp_path):
     subprocess.run(['git','init',str(tmp_path)],check=True,capture_output=True)
     child=tmp_path/'child';child.mkdir()
     with pytest.raises(ValueError,match='repository root'):repository_state(child)
+
+
+@pytest.mark.parametrize('change',['source_subset','iterations','relocations','history','convergence','reference'])
+def test_replay_rejects_fabricated_algorithm_metadata(saved,change):
+    p=saved/'study.json';d=json.loads(p.read_text());r=d['runs'][0]
+    if change=='source_subset':d['source_sha256']={'requirements.txt':d['source_sha256']['requirements.txt']}
+    elif change=='iterations':r['n_iter']=-999
+    elif change=='relocations':r['relocations']='invented'
+    elif change=='history':r['objective_history']=[-100,1e100]
+    elif change=='convergence':r['converged']=not r['converged']
+    else:
+        r=next(x for x in d['runs'] if x['method']!='bisect')
+        r['reference']['n_iter']=-2
+    p.write_text(json.dumps(d))
+    with pytest.raises(ValueError):verify_run(saved)
+
+
+def test_failed_final_validation_never_observes_complete_record(tmp_path,monkeypatch):
+    from clustering_study import experiment
+    output=tmp_path/'interrupted'
+    def interrupted_verification(path,**kwargs):
+        assert json.loads((Path(path)/'study.json').read_text())['status']=='incomplete'
+        raise InterruptedError('simulated interruption at validation boundary')
+    monkeypatch.setattr(experiment,'verify_run',interrupted_verification)
+    with pytest.raises(InterruptedError):run_study(CONFIG,output)
+    saved=json.loads((output/'study.json').read_text())
+    assert saved['status']=='failed' and len(saved['runs'])==9

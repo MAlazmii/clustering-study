@@ -152,9 +152,9 @@ def run_study(config, output):
                 record['runs'].append(entry)
                 _write(output,record)
             if _sources()!=source: raise ValueError('Source changed during experiment')
+            verify_run(output, require_complete=False)
             record['status']='complete'
             _write(output,record)
-            verify_run(output)
     except BaseException as error:
         record['status']='failed'
         record['error']=type(error).__name__+': '+str(error)
@@ -163,17 +163,17 @@ def run_study(config, output):
     return record
 
 
-def verify_run(output):
+def verify_run(output, *, require_complete=True):
     """Recompute data identity, fit invariants and metrics; never trust stored scores."""
     output=Path(output)
     record=json.loads((output/'study.json').read_text())
-    if record.get('schema')!=1 or record.get('status')!='complete':
+    allowed_status = ('complete',) if require_complete else ('incomplete', 'complete')
+    if record.get('schema')!=1 or record.get('status') not in allowed_status:
         raise ValueError('Only complete schema-1 records can be plotted')
     c=_config(record['config'])
     if record['config_sha256']!=_digest(_canonical(c)):raise ValueError('Configuration hash mismatch')
-    if not record.get('source_sha256'):raise ValueError('Missing source fingerprints')
-    for name,sha in record['source_sha256'].items():
-        if name not in _sources() or _sources()[name]!=sha:raise ValueError('Source fingerprint mismatch')
+    if record.get('source_sha256') != _sources():
+        raise ValueError('Source fingerprint map mismatch')
     expected_datasets=set(itertools.product(c['cases'],c['dataset_seeds']))
     data={}
     for item in record['datasets']:
@@ -195,6 +195,16 @@ def verify_run(output):
             if key not in expected or key in seen:raise ValueError('Unexpected or duplicated fit')
             seen.add(key)
             x,y=data[key[:2]]
+            replay=_fit(x,key[3],key[2],c)
+            for field,actual in [('n_iter',replay.n_iter),('converged',replay.converged),('relocations',replay.relocations)]:
+                if type(run[field]) is not type(actual) or run[field]!=actual:
+                    raise ValueError(f'Replay {field} mismatch')
+            for field,actual in [('centers',replay.centers),('labels',replay.labels),('objective_history',np.asarray(replay.history))]:
+                saved=np.asarray(run[field])
+                if saved.shape!=actual.shape or not np.allclose(saved,actual,rtol=1e-12,atol=0):
+                    raise ValueError(f'Replay {field} mismatch')
+            if key[3]=='bisect' and run['initial_centers'] is not None:
+                raise ValueError('Bisecting has no global initial centers')
             labels=np.asarray(run['labels']);centers=np.asarray(run['centers'],dtype=float)
             if labels.shape!=(len(x),) or labels.dtype.kind not in 'iu' or labels.min()<0 or labels.max()>=c['k']:
                 raise ValueError('Invalid labels')
@@ -211,6 +221,9 @@ def verify_run(output):
                 init=initialize(x,c['k'],key[2],key[3])
                 if not np.array_equal(init,np.asarray(run['initial_centers'])):raise ValueError('Initialization mismatch')
                 ref=run['reference'];rc=np.asarray(ref['centers']);rl=np.asarray(ref['labels'])
+                library=KMeans(n_clusters=c['k'],init=init,n_init=1,tol=0,max_iter=c['max_iter'],algorithm='lloyd').fit(x)
+                if type(ref['n_iter']) is not int or ref['n_iter']!=int(library.n_iter_) or not np.array_equal(rl,library.labels_) or rc.shape!=library.cluster_centers_.shape or not np.allclose(rc,library.cluster_centers_,rtol=1e-12,atol=1e-12):
+                    raise ValueError('Reference replay mismatch')
                 if rc.shape!=(c['k'],2) or rl.shape!=(len(x),) or rl.dtype.kind not in 'iu' or rl.min()<0 or rl.max()>=c['k']:
                     raise ValueError('Invalid reference output')
                 inertia=float(((x-rc[rl])**2).sum())

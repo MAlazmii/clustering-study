@@ -26,8 +26,9 @@ def _data(x):
     if a.dtype.kind not in 'fiu' or a.ndim != 2 or not 1 <= a.shape[0] <= 10000 or not 1 <= a.shape[1] <= 64:
         raise ValueError('X must be a real numeric matrix: 1..10000 rows, 1..64 columns')
     a = np.array(a, dtype=np.float64, copy=True)
-    if not np.isfinite(a).all() or np.abs(a).max() > 1e6:
-        raise ValueError('X must be finite with absolute coordinates <= 1e6')
+    magnitude = np.abs(a)
+    if not np.isfinite(a).all() or magnitude.max() > 1e6 or np.any((magnitude > 0) & (magnitude < 1e-100)):
+        raise ValueError('X must be finite; nonzero coordinate magnitude must be in [1e-100, 1e6]')
     return a
 
 

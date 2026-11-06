@@ -20,7 +20,7 @@ Bisecting membership stays hierarchical; its iteration count sums the split runs
 and its labels need not be globally nearest to the final leaf centroids.
 
 Use float64, finite real 2D arrays, 1 <= k <= number of distinct observations.
-Bound n to 10,000, d to 64 and k to 64, |coordinate| <= 1e6 to avoid overflow and
+Bound n to 10,000, d to 64 and k to 64, zero or 1e-100 <= |coordinate| <= 1e6 to avoid overflow and
 unbounded memory. Reject booleans as integer parameters. Use local NumPy Generator
 instances, never reset global random state. Lloyd stops at stable assignments;
 max_iter=300 limits updates. On exhaustion return nearest labels and mark not

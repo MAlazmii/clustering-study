@@ -97,3 +97,16 @@ def test_bisect_preserves_duplicate_rows_and_means():
     assert r.inertia == pytest.approx(sum(float(np.dot(x[i]-r.centers[c], x[i]-r.centers[c])) for i,c in enumerate(r.labels)))
     np.testing.assert_array_equal(r.labels, bisect(x, 3, seed=17).labels)
     assert bisect(x, 1).inertia == pytest.approx(((x-x.mean(axis=0))**2).sum())
+
+
+def test_reject_underflow_scale_instead_of_losing_clusters():
+    for method in ['random', 'plus']:
+        with pytest.raises(ValueError, match='magnitude'):
+            kmeans([[0.], [1e-200]], 2, init=method)
+    assert kmeans([[0.], [1e-100]], 2).converged
+
+
+def test_explicit_resource_bounds():
+    for x in [np.zeros((10001,1)),np.zeros((1,65))]:
+        with pytest.raises(ValueError):kmeans(x,1)
+    with pytest.raises(ValueError):kmeans(np.arange(65.).reshape(-1,1),65)
