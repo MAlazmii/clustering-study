@@ -32,6 +32,9 @@ do not establish a universally best clustering method.
 
 See [methods and limits](docs/methods.md), [validation status](docs/validation.md),
 and the [complete result record](results/published/study.json).
+All 225 fits converged; all 150 identical-start library checks matched the
+custom partitions. A second full run reproduced every numerical field exactly
+in the same environment; timings are excluded from that equality claim.
 
 ## Quick start
 
@@ -61,6 +64,11 @@ LOKY_MAX_CPU_COUNT=1 MPLCONFIGDIR=/tmp/clustering-mpl python -m clustering_study
 LOKY_MAX_CPU_COUNT=1 MPLCONFIGDIR=/tmp/clustering-mpl python -m clustering_study.experiment verify results/my-study
 LOKY_MAX_CPU_COUNT=1 MPLCONFIGDIR=/tmp/clustering-mpl python scripts/plot_results.py results/my-study figures-my-study
 ```
+
+To compare a second full run, use
+`python scripts/compare_runs.py results/my-study results/my-study-repeat`.
+The comparison verifies both records, then checks inputs and every numerical
+fit field while excluding elapsed times.
 
 Both output directories must be new. A Git checkout is required for source
 provenance; an extracted source ZIP alone cannot supply the commit identity.

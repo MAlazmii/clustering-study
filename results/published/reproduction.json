@@ -1,0 +1,9 @@
+{
+  "numerically_identical_fits": 225,
+  "numerical_sha256": "c0a3acf9d83fe5b223a4d99f192eccc1f1478283988b282de97b22095f0c3214",
+  "first_record_sha256": "939afc1bcacfd102d9bcc7c4cdd53caccce24a4c3a216a120658bb396856b4c3",
+  "second_record_sha256": "92d8e1fe0d7aed1bf99232e082a5e88cfe772885b0c659f99f40e437495522da",
+  "source_commit_first": "19ea04fbf9828d7d1a66830339a38a2049a40a6f",
+  "source_commit_second": "19ea04fbf9828d7d1a66830339a38a2049a40a6f",
+  "scope": "Exact inputs and numerical outputs. Timings, timestamps and environment metadata excluded."
+}

@@ -1,0 +1,83 @@
+[
+  {
+    "case": "separated",
+    "method": "random",
+    "fits": 25,
+    "median_ari": 1.0,
+    "minimum_ari": 0.4436807868716527,
+    "median_silhouette": 0.8171996411872846,
+    "median_inertia": 491.9780080359337
+  },
+  {
+    "case": "separated",
+    "method": "plus",
+    "fits": 25,
+    "median_ari": 1.0,
+    "minimum_ari": 0.4457935957520311,
+    "median_silhouette": 0.8171996411872846,
+    "median_inertia": 491.9780080359337
+  },
+  {
+    "case": "separated",
+    "method": "bisect",
+    "fits": 25,
+    "median_ari": 1.0,
+    "minimum_ari": 0.9949958125176231,
+    "median_silhouette": 0.8171996411872846,
+    "median_inertia": 491.9780080359337
+  },
+  {
+    "case": "overlap",
+    "method": "random",
+    "fits": 25,
+    "median_ari": 0.7175269336784333,
+    "minimum_ari": 0.7102608939901247,
+    "median_silhouette": 0.46990233919726204,
+    "median_inertia": 4543.357861967905
+  },
+  {
+    "case": "overlap",
+    "method": "plus",
+    "fits": 25,
+    "median_ari": 0.7267477463191915,
+    "minimum_ari": 0.7102608939901247,
+    "median_silhouette": 0.47002478889152355,
+    "median_inertia": 4543.28300109247
+  },
+  {
+    "case": "overlap",
+    "method": "bisect",
+    "fits": 25,
+    "median_ari": 0.5744185151179653,
+    "minimum_ari": 0.5632018898097012,
+    "median_silhouette": 0.3943580438061311,
+    "median_inertia": 5523.470308333155
+  },
+  {
+    "case": "anisotropic",
+    "method": "random",
+    "fits": 25,
+    "median_ari": 0.8524216078260151,
+    "minimum_ari": 0.812316546285462,
+    "median_silhouette": 0.6382301903878608,
+    "median_inertia": 1123.7405067510397
+  },
+  {
+    "case": "anisotropic",
+    "method": "plus",
+    "fits": 25,
+    "median_ari": 0.8524216078260151,
+    "minimum_ari": 0.812316546285462,
+    "median_silhouette": 0.6380894670020212,
+    "median_inertia": 1123.7405067510397
+  },
+  {
+    "case": "anisotropic",
+    "method": "bisect",
+    "fits": 25,
+    "median_ari": 0.6051613542200246,
+    "minimum_ari": 0.582743866340773,
+    "median_silhouette": 0.544876294923017,
+    "median_inertia": 1680.9660391072205
+  }
+]

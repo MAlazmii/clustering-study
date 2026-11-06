@@ -96,3 +96,13 @@ def test_failed_final_validation_never_observes_complete_record(tmp_path,monkeyp
     with pytest.raises(InterruptedError):run_study(CONFIG,output)
     saved=json.loads((output/'study.json').read_text())
     assert saved['status']=='failed' and len(saved['runs'])==9
+
+
+def test_compare_repeated_numerics_and_reject_changed_design(tmp_path):
+    from scripts.compare_runs import compare_runs
+    a=tmp_path/'a';b=tmp_path/'b';c=tmp_path/'c'
+    run_study(CONFIG,a);run_study(CONFIG,b)
+    assert compare_runs(a,b)['numerically_identical_fits']==9
+    changed=copy.deepcopy(CONFIG);changed['init_seeds']=[202]
+    run_study(changed,c)
+    with pytest.raises(ValueError):compare_runs(a,c)

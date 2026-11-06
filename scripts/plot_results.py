@@ -45,6 +45,7 @@ def main():
     fig.subplots_adjust(left=.075,right=.975,top=.77,bottom=.20,hspace=.36,wspace=.23)
     fig.text(.065,.92,'CLUSTERING / UNDER THE SURFACE',color=INK,fontsize=25,weight='bold')
     fig.text(.065,.867,'The geometry matters. A good-looking partition can still miss the generating groups.',color=MUTED,fontsize=13)
+    ari_lower = min(-.08, min(r['ari'] for r in record['runs'])-.05)
     for col,case in enumerate(config['cases']):
         for row,metric in enumerate(['ari','silhouette']):
             ax=axes[row,col];decorate(ax)
@@ -61,7 +62,7 @@ def main():
                 ax.scatter([j],[med],color=INK,s=35,marker='_',zorder=5)
             ax.set_xticks(range(3),[NAMES[m] for m in config['methods']])
             ax.set_xlim(-.4,2.4)
-            ax.set_ylim(-.08,1.08) if metric=='ari' else ax.set_ylim(-1.05,1.05)
+            ax.set_ylim(ari_lower,1.08) if metric=='ari' else ax.set_ylim(-1.05,1.05)
             if row==0:ax.set_title(TITLES[case],color=INK,fontsize=16,pad=15)
             if col==0:ax.set_ylabel('Adjusted Rand index' if metric=='ari' else 'Silhouette score',color=INK,fontsize=12)
     count=len(config['dataset_seeds'])*len(config['init_seeds'])

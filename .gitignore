@@ -6,3 +6,9 @@ results/*
 !results/.gitkeep
 docs/images/*
 !docs/images/.gitkeep
+
+!results/published/
+!results/published/**
+!docs/images/*.png
+!docs/images/*.svg
+figures-*/

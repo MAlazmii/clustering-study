@@ -1,6 +1,6 @@
 # Clustering Study Implementation Plan
 
-> Execute with superpowers:executing-plans, then one fresh final code review.
+> Implement tasks in order, then perform an independent final review.
 
 **Goal:** A locally verified, GitHub-ready clustering study with actual experiments and figures.
 **Architecture:** Independent NumPy algorithms, generated inputs, recorded experiment, evidence-driven plots.
@@ -30,12 +30,12 @@ Interfaces: generate(case,seed,n); run_study(config,output); verify_run(output).
 - [x] Failing tests for deterministic generation, exclusive output, malformed config,
 complete small run, tampered array/metrics, incomplete record, ancestor Git rejection.
 - [x] Implement input/output hashes and raw evidence; run all tests; commit.
-- [ ] Run full predeclared225-fit experiment and a second repeat; compare all numerical fields.
+- [x] Run full predeclared225-fit experiment and a second repeat; compare all numerical fields.
 
 ## Task 3 — Figures, documentation, release preparation
 Files: scripts/plot_results.py, README.md, docs/methods.md, docs/validation.md,
 docs/provenance.md, CONTRIBUTING.md, LICENSE, requirements.txt, .github/workflows/checks.yml.
-- [ ] Generate PNG/SVG from verified records, inspect both figures.
-- [ ] Explain real measured findings and limitations, reproduce commands in clean checkout.
-- [ ] Fresh whole-project review, fix blocking issues with regression tests, final full-suite run.
-- [ ] Save a local checkpoint with exact commit, evidence and remaining Linux/GitHub status.
+- [x] Generate PNG/SVG from verified records, inspect both figures.
+- [x] Explain real measured findings and limitations, reproduce commands in clean checkout.
+- [x] Fresh whole-project review, fix blocking issues with regression tests, final full-suite run.
+- [x] Save a local checkpoint with exact commit, evidence and remaining Linux/GitHub status.
