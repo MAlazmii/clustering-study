@@ -1,0 +1,1 @@
+{"cases":["separated","overlap","anisotropic"],"dataset_seeds":[11],"init_seeds":[101],"methods":["random","plus","bisect"],"n":60,"k":3,"max_iter":300,"order_seed":90210}

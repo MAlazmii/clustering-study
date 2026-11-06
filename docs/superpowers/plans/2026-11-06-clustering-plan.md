@@ -20,16 +20,16 @@ Files: clustering_study/core.py, tests/test_core.py.
 Interfaces: initialize(X,k,seed,method); kmeans(X,k,seed=0,init='plus',initial=None,max_iter=300);
 bisect(X,k,seed=0,max_iter=300). Result holds centers, labels, inertia, n_iter,
 converged, history, initial_centers, relocations.
-- [ ] Write failing tests: hand-computed 1D means/SSE, same-init sklearn, duplicates/repair,
+- [x] Write failing tests: hand-computed 1D means/SSE, same-init sklearn, duplicates/repair,
 invalid data/counts, non-convergence, no input/global-RNG mutation, bisect partition/inertia.
-- [ ] Implement and run full suite; commit independent algorithms.
+- [x] Implement and run full suite; commit independent algorithms.
 
 ## Task 2 — Experiment and evidence
 Files: clustering_study/experiment.py, tests/test_experiment.py, configs/study.json.
 Interfaces: generate(case,seed,n); run_study(config,output); verify_run(output).
-- [ ] Failing tests for deterministic generation, exclusive output, malformed config,
+- [x] Failing tests for deterministic generation, exclusive output, malformed config,
 complete small run, tampered array/metrics, incomplete record, ancestor Git rejection.
-- [ ] Implement input/output hashes and raw evidence; run all tests; commit.
+- [x] Implement input/output hashes and raw evidence; run all tests; commit.
 - [ ] Run full predeclared225-fit experiment and a second repeat; compare all numerical fields.
 
 ## Task 3 — Figures, documentation, release preparation
