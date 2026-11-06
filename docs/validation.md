@@ -18,8 +18,8 @@ after evidence validation succeeds.
 | Complete 225-fit study | PASS locally | 225/225 converged, 150/150 reference partitions agree; measured commit `19ea04f` |
 | Second-run numerical reproduction | PASS locally | All 225 fits exactly reproduced in the same environment; `results/published/reproduction.json` |
 | Figures | PASS locally | Actual evidence plots, fixed-seed gallery, visual inspection |
-| GitHub Linux workflow | NOT RUN | Prepared bounded CPU workflow; no remote created yet |
-| Public release | NOT RUN | Requires GitHub validation and publication review |
+| GitHub Linux workflow | Run-specific | [Exact-commit workflow results](https://github.com/MAlazmii/clustering-study/actions/workflows/checks.yml); 57 tests, two full studies, comparison and figures |
+| Public release | NOT RUN | Repository is private; no public release is authorized in this step |
 
 The full record includes exact source fingerprints and commit, generated arrays,
 all memberships/centroids, scores, initialization, convergence/iteration metadata,
@@ -49,3 +49,16 @@ The primary record and all 15 generated arrays are included. The second raw run
 remains local; its SHA and an exact numerical comparison digest are preserved in
 the reproduction record. A future reader can generate their own second run and
 compare using `scripts/compare_runs.py`.
+
+## Private GitHub validation
+
+The owner authorized private repository creation and standard Linux checks on
+6 November 2026. The workflow has read-only permissions, pinned Actions and one
+Ubuntu 24.04 job with a ten-minute limit. It uses Python 3.11 and pinned dependencies;
+no GPU, premium runner, self-hosted access or paid service is enabled.
+
+Each run saves both 225-fit records, generated arrays, numerical comparison and
+figures as a commit-labelled artifact retained for 14 days. The run's conclusion and
+step logs establish what actually passed; this page does not substitute for them.
+The saved Mac record and the new Linux record have distinct environmental metadata.
+No cross-platform timing equality or performance ranking is claimed.

@@ -22,9 +22,11 @@ jobs:
           python-version: '3.11'
       - run: python -m pip install -r requirements.txt
       - run: python -m pytest --rootdir=. -q
-      - name: Exercise recording, verification and figures
+      - name: Reproduce the full study and figures
         run: |
-          python -m clustering_study.experiment run results/ci --config configs/ci.json
+          python -m clustering_study.experiment run results/ci
+          python -m clustering_study.experiment run results/ci-repeat
+          python scripts/compare_runs.py results/ci results/ci-repeat > results/ci/reproduction.json
           python -m clustering_study.experiment verify results/ci
           python scripts/plot_results.py results/ci results/ci-figures
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -33,6 +35,7 @@ jobs:
           name: cpu-evidence-${{ github.sha }}
           path: |
             results/ci
+            results/ci-repeat
             results/ci-figures
           retention-days: 14
           if-no-files-found: warn

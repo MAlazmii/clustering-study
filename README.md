@@ -105,9 +105,10 @@ are preserved. See [the precise algorithm](docs/methods.md).
 
 Local tests cover analytical expectations, library agreement, duplicates, empty
 clusters, invalid inputs, iteration exhaustion, reproducibility, saved-record
-corruption and interrupted completion. The Linux workflow is prepared; execution
-on GitHub has **not yet been performed**. No Linux-pass badge or release claim is
-made until that run exists.
+corruption and interrupted completion. The [Linux CPU workflow](https://github.com/MAlazmii/clustering-study/actions/workflows/checks.yml)
+runs the tests, two complete studies, numerical comparison and figure generation
+on Ubuntu 24.04 with Python 3.11. Inspect the run for the exact commit you intend
+to use; the committed study remains the original Mac measurement record.
 
 This educational implementation is designed for small reproducible studies. It
 is not a scalable production estimator, a GPU benchmark, or a model trained on
