@@ -1,0 +1,10 @@
+{
+  "cases": ["separated", "overlap", "anisotropic"],
+  "dataset_seeds": [11, 22, 33, 44, 55],
+  "init_seeds": [101, 202, 303, 404, 505],
+  "methods": ["random", "plus", "bisect"],
+  "n": 600,
+  "k": 3,
+  "max_iter": 300,
+  "order_seed": 90210
+}
