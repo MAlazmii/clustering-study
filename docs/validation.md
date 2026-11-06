@@ -18,8 +18,8 @@ after evidence validation succeeds.
 | Complete 225-fit study | PASS locally | 225/225 converged, 150/150 reference partitions agree; measured commit `19ea04f` |
 | Second-run numerical reproduction | PASS locally | All 225 fits exactly reproduced in the same environment; `results/published/reproduction.json` |
 | Figures | PASS locally | Actual evidence plots, fixed-seed gallery, visual inspection |
-| GitHub Linux workflow | Run-specific | [Exact-commit workflow results](https://github.com/MAlazmii/clustering-study/actions/workflows/checks.yml); 57 tests, two full studies, comparison and figures |
-| Public release | NOT RUN | Repository is private; no public release is authorized in this step |
+| GitHub Linux workflow | PASS | [Recorded run at `5aebaf8`](https://github.com/MAlazmii/clustering-study/actions/runs/42270230598): 57 tests, two full 225-fit studies, exact numerical comparison and figures |
+| Release checks | Commit-specific | See [workflow results](https://github.com/MAlazmii/clustering-study/actions/workflows/checks.yml) for the exact revision being used |
 
 The full record includes exact source fingerprints and commit, generated arrays,
 all memberships/centroids, scores, initialization, convergence/iteration metadata,
@@ -50,10 +50,15 @@ remains local; its SHA and an exact numerical comparison digest are preserved in
 the reproduction record. A future reader can generate their own second run and
 compare using `scripts/compare_runs.py`.
 
-## Private GitHub validation
+## GitHub Linux validation
 
-The owner authorized private repository creation and standard Linux checks on
-6 November 2026. The workflow has read-only permissions, pinned Actions and one
+The first private GitHub validation completed successfully on 6 November 2026
+at commit `5aebaf8aa51f49a5d8ceefcb6a42972dd5692f35`. All 57 tests passed;
+each of two complete studies had 225 converged fits and 150 matching reference
+partitions. Their inputs and numerical outputs reproduced exactly, excluding
+timing. Both figures and the downloadable evidence artifact were generated.
+
+The workflow has read-only permissions, pinned Actions and one
 Ubuntu 24.04 job with a ten-minute limit. It uses Python 3.11 and pinned dependencies;
 no GPU, premium runner, self-hosted access or paid service is enabled.
 
