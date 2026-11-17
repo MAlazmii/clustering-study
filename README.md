@@ -12,7 +12,7 @@ are needed to run the experiment after installing the dependencies.
 
 Each panel contains 25 actual fits per method: five dataset seeds × five
 initialization seeds. Dots show every fit; thick bars show the interquartile range,
-white marks the median, and thin lines the minimum–maximum range. These are
+dark marks show the median, and thin lines the minimum–maximum range. These are
 **synthetic-data results**, with dependent repetitions—not confidence intervals or
 real-world accuracy estimates.
 
@@ -85,7 +85,7 @@ or GPU calls occur. The default study uses 600 points and k=3.
 
 This illustration always uses the first declared dataset and initialization seeds
 (11 and 101). It is not the best run selected after examining results. Colors are
-arbitrary cluster IDs within each panel; white markers show learned centroids.
+arbitrary cluster IDs within each panel; dark markers show learned centroids.
 
 ## Numerical contract
 

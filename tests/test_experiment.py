@@ -86,6 +86,47 @@ def test_replay_rejects_fabricated_algorithm_metadata(saved,change):
     with pytest.raises(ValueError):verify_run(saved)
 
 
+def test_archived_record_survives_verified_toolchain_updates(monkeypatch):
+    from clustering_study import experiment
+
+    current = experiment._sources()
+    current['requirements.txt'] = 'updated toolchain'
+    current['clustering_study/experiment.py'] = 'updated verifier'
+    monkeypatch.setattr(experiment, '_sources', lambda: current)
+    record = verify_run(experiment.ROOT / 'results' / 'published')
+    assert record['status'] == 'complete' and len(record['runs']) == 225
+
+
+def test_historical_fingerprint_exception_rejects_modified_evidence(monkeypatch):
+    from clustering_study import experiment
+
+    content = (experiment.ROOT / 'results' / 'published' / 'study.json').read_bytes()
+    record = json.loads(content)
+    current = experiment._sources()
+    current['requirements.txt'] = 'updated toolchain'
+    monkeypatch.setattr(experiment, '_sources', lambda: current)
+
+    with pytest.raises(ValueError, match='Source fingerprint map mismatch'):
+        experiment._verify_source_fingerprints(record, content + b'\n')
+
+    current['clustering_study/core.py'] = 'changed algorithm'
+    with pytest.raises(ValueError, match='Source fingerprint map mismatch'):
+        experiment._verify_source_fingerprints(record, content)
+
+
+def test_historical_fingerprint_exception_requires_numerical_dependencies(monkeypatch):
+    from clustering_study import experiment
+
+    content = (experiment.ROOT / 'results' / 'published' / 'study.json').read_bytes()
+    record = json.loads(content)
+    current = experiment._sources()
+    current['requirements.txt'] = 'updated toolchain'
+    monkeypatch.setattr(experiment, '_sources', lambda: current)
+    monkeypatch.setattr(experiment.importlib.metadata, 'version', lambda name: 'changed')
+    with pytest.raises(ValueError, match='Source fingerprint map mismatch'):
+        experiment._verify_source_fingerprints(record, content)
+
+
 def test_failed_final_validation_never_observes_complete_record(tmp_path,monkeypatch):
     from clustering_study import experiment
     output=tmp_path/'interrupted'

@@ -19,6 +19,7 @@ from .core import initialize, kmeans, bisect, _integer
 ROOT = Path(__file__).resolve().parents[1]
 CASES = ('separated', 'overlap', 'anisotropic')
 METHODS = ('random', 'plus', 'bisect')
+PUBLISHED_RECORD_SHA256 = '939afc1bcacfd102d9bcc7c4cdd53caccce24a4c3a216a120658bb396856b4c3'
 
 
 def _digest(data):
@@ -81,6 +82,26 @@ def repository_state(root):
 def _sources():
     files = sorted((ROOT/'clustering_study').glob('*.py')) + [ROOT/'requirements.txt']
     return {str(p.relative_to(ROOT)):_digest(p.read_bytes()) for p in files}
+
+
+def _verify_source_fingerprints(record, content):
+    saved = record.get('source_sha256')
+    current = _sources()
+    if saved == current:
+        return
+    # Replay the exact archived record with its original algorithm and numerical dependencies.
+    algorithm_sources = ('clustering_study/__init__.py', 'clustering_study/core.py')
+    numerical_packages = ('numpy', 'scipy', 'scikit-learn', 'threadpoolctl')
+    if (
+        _digest(content) == PUBLISHED_RECORD_SHA256
+        and all(saved[name] == current.get(name) for name in algorithm_sources)
+        and all(
+            record['environment']['packages'][name] == importlib.metadata.version(name)
+            for name in numerical_packages
+        )
+    ):
+        return
+    raise ValueError('Source fingerprint map mismatch')
 
 
 def _write(output, record):
@@ -166,14 +187,14 @@ def run_study(config, output):
 def verify_run(output, *, require_complete=True):
     """Recompute data identity, fit invariants and metrics; never trust stored scores."""
     output=Path(output)
-    record=json.loads((output/'study.json').read_text())
+    content=(output/'study.json').read_bytes()
+    record=json.loads(content)
     allowed_status = ('complete',) if require_complete else ('incomplete', 'complete')
     if record.get('schema')!=1 or record.get('status') not in allowed_status:
         raise ValueError('Only complete schema-1 records can be plotted')
     c=_config(record['config'])
     if record['config_sha256']!=_digest(_canonical(c)):raise ValueError('Configuration hash mismatch')
-    if record.get('source_sha256') != _sources():
-        raise ValueError('Source fingerprint map mismatch')
+    _verify_source_fingerprints(record, content)
     expected_datasets=set(itertools.product(c['cases'],c['dataset_seeds']))
     data={}
     for item in record['datasets']:

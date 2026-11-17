@@ -11,17 +11,17 @@ from matplotlib.colors import ListedColormap
 import numpy as np
 from clustering_study.experiment import verify_run
 
-BG, INK, MUTED = '#111c26', '#f2f3eb', '#aebcca'
-COLORS = {'random':'#ffcc80', 'plus':'#57d9c2', 'bisect':'#b6a4ff'}
+BG, INK, MUTED = '#f5f0e5', '#2b2724', '#5e5550'
+COLORS = {'random':'#a84e34', 'plus':'#376e57', 'bisect':'#66548b'}
 NAMES = {'random':'Random start', 'plus':'k-means++', 'bisect':'Bisecting'}
 TITLES = {'separated':'Separated', 'overlap':'Overlapping', 'anisotropic':'Stretched'}
 
 
 def decorate(ax):
-    ax.set_facecolor(BG)
+    ax.set_facecolor('#fdfbf6')
     ax.tick_params(colors=MUTED,labelsize=10)
-    for spine in ax.spines.values():spine.set_color('#394752')
-    ax.grid(axis='y',color='#394752',alpha=.5)
+    for spine in ax.spines.values():spine.set_color('#b9aa98')
+    ax.grid(axis='y',color='#cfc5b8',alpha=.7)
 
 
 def save(fig, output, name):
@@ -40,11 +40,11 @@ def main():
     if config['cases']!=['separated','overlap','anisotropic'] or config['methods']!=['random','plus','bisect']:
         raise ValueError('Figure layout requires the three documented cases and methods')
     args.output.mkdir(parents=True,exist_ok=False)
-    plt.rcParams.update({'font.family':'DejaVu Sans','svg.hashsalt':'clustering-study-v1'})
+    plt.rcParams.update({'font.family':'DejaVu Sans','svg.hashsalt':'clustering-study-v2'})
     fig,axes=plt.subplots(2,3,figsize=(14,9),facecolor=BG)
     fig.subplots_adjust(left=.075,right=.975,top=.77,bottom=.20,hspace=.36,wspace=.23)
-    fig.text(.065,.92,'CLUSTERING / UNDER THE SURFACE',color=INK,fontsize=25,weight='bold')
-    fig.text(.065,.867,'The geometry matters. A good-looking partition can still miss the generating groups.',color=MUTED,fontsize=13)
+    fig.text(.065,.92,'Clustering quality across geometries',color=INK,fontfamily='DejaVu Serif',fontsize=26,weight='bold')
+    fig.text(.065,.867,'How closely does each method recover the generating groups?',color=MUTED,fontsize=13)
     ari_lower = min(-.08, min(r['ari'] for r in record['runs'])-.05)
     for col,case in enumerate(config['cases']):
         for row,metric in enumerate(['ari','silhouette']):
@@ -66,7 +66,7 @@ def main():
             if row==0:ax.set_title(TITLES[case],color=INK,fontsize=16,pad=15)
             if col==0:ax.set_ylabel('Adjusted Rand index' if metric=='ari' else 'Silhouette score',color=INK,fontsize=12)
     count=len(config['dataset_seeds'])*len(config['init_seeds'])
-    fig.text(.065,.12,f'{count} fits per method and case: {len(config["dataset_seeds"])} dataset seeds × {len(config["init_seeds"])} initialization seeds. Dots: every fit. Thick bar: IQR. White mark: median.',color=INK,fontsize=11)
+    fig.text(.065,.12,f'{count} fits per method and case: {len(config["dataset_seeds"])} dataset seeds × {len(config["init_seeds"])} initialization seeds. Dots: every fit. Thick bar: IQR. Dark mark: median.',color=INK,fontsize=11)
     fig.text(.065,.080,'ARI uses generating labels only for evaluation; silhouette measures separation in the observed geometry. Bars are not confidence intervals.',color=MUTED,fontsize=10)
     fig.text(.065,.043,f'Actual CPU runs on synthetic data · {config["n"]} points, k = {config["k"]} · source {record["commit"][:7]} · no real-world accuracy claim',color=MUTED,fontsize=10)
     save(fig,args.output,'quality-overview')
@@ -74,9 +74,9 @@ def main():
     fig,axes=plt.subplots(2,3,figsize=(14,8.8),facecolor=BG)
     fig.subplots_adjust(left=.06,right=.97,top=.79,bottom=.18,hspace=.32,wspace=.24)
     ds=config['dataset_seeds'][0];seed=config['init_seeds'][0]
-    fig.text(.06,.92,'ONE FIXED VIEW / THREE GEOMETRIES',color=INK,fontsize=25,weight='bold')
+    fig.text(.06,.92,'How k-means++ partitions three geometries',color=INK,fontfamily='DejaVu Serif',fontsize=26,weight='bold')
     fig.text(.06,.865,f'Preselected dataset seed {ds}, initialization seed {seed}. Top: generating components. Bottom: k-means++ assignments.',color=MUTED,fontsize=12)
-    palette=ListedColormap(['#57d9c2','#ffcc80','#b6a4ff'])
+    palette=ListedColormap(['#376e57','#a84e34','#66548b'])
     for col,case in enumerate(config['cases']):
         run=next(r for r in record['runs'] if r['case']==case and r['dataset_seed']==ds and r['init_seed']==seed and r['method']=='plus')
         with np.load(args.run/f'{case}-{ds}.npz',allow_pickle=False) as data:x,y=data['x'],data['y']
@@ -92,7 +92,7 @@ def main():
             else:
                 ax.scatter(centers[:,0],centers[:,1],marker='X',s=75,c=INK,edgecolors=BG,linewidths=1,zorder=4)
                 ax.set_title(f'ARI {run["ari"]:.3f} · silhouette {run["silhouette"]:.3f}',color=MUTED,fontsize=11)
-    fig.text(.06,.11,'Centroid markers: white ×. Cluster colors are arbitrary IDs within each panel; colors do not imply correspondence between rows.',color=INK,fontsize=10)
+    fig.text(.06,.11,'Centroid markers: dark ×. Cluster colors are arbitrary IDs within each panel; colors do not imply correspondence between rows.',color=INK,fontsize=10)
     fig.text(.06,.07,'No best-run selection. The companion overview contains every planned seed; this view explains geometry rather than typical performance.',color=MUTED,fontsize=10)
     fig.text(.06,.035,f'Generated inputs, assignments and metrics loaded from the recorded experiment · source {record["commit"][:7]}',color=MUTED,fontsize=10)
     save(fig,args.output,'geometry-gallery')
